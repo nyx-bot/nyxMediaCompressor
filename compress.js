@@ -48,12 +48,17 @@ module.exports = (url) => new Promise(async res => {
 
             for (const compressor of usableCompressors) {
                 if(!stream) await new Promise(async c => {
+                    const started = Date.now();
+
                     compressor.func({ 
                         o, 
                         codecTypes, 
                         url,
                     }).then(r => {
-                        if(r && !r.error) stream = r;
+                        if(r && !r.error) {
+                            stream = r;
+                            console.log(`Completed using ${compressor.name} in ${(Date.now()-started)/1000} seconds!`)
+                        }
                         c();
                     }).catch(e => {
                         console.error(e);
