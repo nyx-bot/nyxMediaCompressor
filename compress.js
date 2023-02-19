@@ -70,10 +70,17 @@ module.exports = (url) => new Promise(async res => {
             if(stream) {
                 res(stream)
             } else {
-                res({
+                /*res({
                     error: true,
                     message: `All available compression methods failed.`
-                })
+                })*/
+                const req = require(`superagent`).get(url);
+
+                const pt = new (require('stream')).PassThrough();
+
+                req.pipe(pt);
+
+                res(pt)
             }
         } catch(e) {
             console.error(e);
