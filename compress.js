@@ -6,6 +6,16 @@ const compressors = require('fs').readdirSync(`./compressors/`).filter(f => f.en
 }, require(`./compressors/${f}`)));
 
 module.exports = (url) => new Promise(async res => {
+    const resolveRawFile = () => {
+        const req = require(`superagent`).get(url);
+
+        const pt = new (require('stream')).PassThrough();
+
+        req.pipe(pt);
+
+        res(pt)
+    }
+
     const ffprobeProc = cp.spawn(`ffprobe`, [`-i`, url, `-v`, `quiet`, `-print_format`, `json`, `-show_format`, `-show_streams`]);
     
     let ffprobeResult = ``;
@@ -13,7 +23,7 @@ module.exports = (url) => new Promise(async res => {
     ffprobeProc.stdout.on(`data`, d => ffprobeResult += d.toString().trim());
 
     ffprobeProc.once(`close`, async (code) => {
-        if(ffprobeResult.length > 0) try {
+        if(ffprobeResult.length > 0 && o.format && o.streams) try {
             const o = JSON.parse(ffprobeResult)
     
             //console.log(o)
@@ -74,23 +84,15 @@ module.exports = (url) => new Promise(async res => {
                     error: true,
                     message: `All available compression methods failed.`
                 })*/
-                const req = require(`superagent`).get(url);
-
-                const pt = new (require('stream')).PassThrough();
-
-                req.pipe(pt);
-
-                res(pt)
+                resolveRawFile()
             }
         } catch(e) {
             console.error(e);
-            res({
+            /*res({
                 error: true,
                 message: `Internal error occurred!`
-            })
-        } else res({
-            error: true,
-            message: `Cannot detect media type!`
-        })
+            })*/
+            resolveRawFile()
+        } else resolveRawFile()
     })
 })
