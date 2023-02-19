@@ -37,17 +37,17 @@ module.exports = {
                     const reduction = Math.round(codecTypes.width/maxRes);
 
                     if(hwAccelEnabled) {
-                        filter.push(`scale_vaapi=w=${maxRes}:h=${codecTypes.height/reduction}`)
+                        filter.push(`scale_vaapi=w=${maxRes}:h=${Math.round(codecTypes.height/reduction)}`)
                     } else {
-                        filter.push(`scale=${maxRes}:${codecTypes.height/reduction}`)
+                        filter.push(`scale=${maxRes}:${Math.round(codecTypes.height/reduction)}`)
                     }
                 } else if(codecTypes.width < codecTypes.height) {
                     const reduction = Math.round(codecTypes.height/maxRes);
                     
                     if(hwAccelEnabled) {
-                        filter.push(`scale_vaapi=w=${codecTypes.width/reduction}:h=${maxRes}`)
+                        filter.push(`scale_vaapi=w=${Math.round(codecTypes.width/reduction)}:h=${maxRes}`)
                     } else {
-                        filter.push(`scale=${codecTypes.width/reduction}:${maxRes}`)
+                        filter.push(`scale=${Math.round(codecTypes.width/reduction)}:${maxRes}`)
                     }
                 };
             }
