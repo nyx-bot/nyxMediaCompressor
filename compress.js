@@ -23,7 +23,7 @@ module.exports = (url) => new Promise(async res => {
     ffprobeProc.stdout.on(`data`, d => ffprobeResult += d.toString().trim());
 
     ffprobeProc.once(`close`, async (code) => {
-        if(ffprobeResult.length > 0 && o.format && o.streams) try {
+        if(ffprobeResult.length > 0) try {
             const o = JSON.parse(ffprobeResult)
     
             //console.log(o)
