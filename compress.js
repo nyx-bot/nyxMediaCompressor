@@ -25,6 +25,8 @@ module.exports = (url) => new Promise(async res => {
     ffprobeProc.once(`close`, async (code) => {
         if(ffprobeResult.length > 0) try {
             const o = JSON.parse(ffprobeResult)
+
+            if(!o.format || (!o.streams || o.streams.length == 0)) return resolveRawFile();
     
             //console.log(o)
     
